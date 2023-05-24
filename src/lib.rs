@@ -5,6 +5,7 @@ use std::cell::RefCell;
 use std::marker::PhantomData;
 
 use dashmap::DashMap;
+use once_cell::sync::OnceCell;
 
 mod types;
 pub use types::{Error, Recorder, UseCase, UseCaseBytes};
@@ -16,9 +17,7 @@ mod utils;
 
 type IntPointer = usize;
 
-lazy_static::lazy_static! {
-    static ref TRACKED_POINTERS: DashMap<IntPointer, UseCaseBytes> = DashMap::new();
-}
+static TRACKED_POINTERS: OnceCell<DashMap<IntPointer, UseCaseBytes>> = OnceCell::new();
 
 thread_local! {
     static CURRENT_USECASE: RefCell<Option<UseCaseBytes>> = RefCell::new(None);
@@ -128,7 +127,9 @@ impl<R: Recorder<U>, U: UseCase, A: GlobalAlloc> Alloc<U, R, A> {
                 .and_then(|x| U::try_from(x).ok())
                 .unwrap_or_default();
             if self.recorder.on_alloc(use_case, layout.size()) {
-                TRACKED_POINTERS.insert(ptr, use_case_bytes.unwrap_or_else(|| U::default().into()));
+                TRACKED_POINTERS
+                    .get_or_init(Default::default)
+                    .insert(ptr, use_case_bytes.unwrap_or_else(|| U::default().into()));
             }
             Ok(())
         })
@@ -137,11 +138,13 @@ impl<R: Recorder<U>, U: UseCase, A: GlobalAlloc> Alloc<U, R, A> {
 
     fn handle_on_dealloc(&self, ptr: usize, layout: Layout) {
         self.synchronized(Some(layout.size()), |_| {
-            if let Some((_, use_case_bytes)) = TRACKED_POINTERS.remove(&ptr) {
-                self.recorder.on_dealloc(
-                    U::try_from(use_case_bytes).unwrap_or_default(),
-                    layout.size(),
-                );
+            if let Some(pointers_map) = TRACKED_POINTERS.get() {
+                if let Some((_, use_case_bytes)) = pointers_map.remove(&ptr) {
+                    self.recorder.on_dealloc(
+                        U::try_from(use_case_bytes).unwrap_or_default(),
+                        layout.size(),
+                    );
+                }
             }
             Ok(())
         })
