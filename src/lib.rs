@@ -109,7 +109,7 @@ impl<R: Recorder<U>, U: UseCase, A: GlobalAlloc> Alloc<U, R, A> {
         CURRENT_USECASE
             .try_with(|value| {
                 if let Ok(mut value) = value.try_borrow_mut() {
-                    f(&mut *value)
+                    f(&mut value)
                 } else {
                     Err(Error::CurrentUsecaseContentionRefCell)
                 }
@@ -153,7 +153,6 @@ impl<R: Recorder<U>, U: UseCase, A: GlobalAlloc> Alloc<U, R, A> {
     ///
     /// This function can fail if there is too much contention on the allocator, or if it is called
     /// from within itself.
-    #[must_use]
     pub fn with_recorder<R2>(&self, f: impl FnOnce(&R) -> Result<R2, Error>) -> Result<R2, Error> {
         self.synchronized(None, |_| f(&self.recorder))
     }

@@ -34,6 +34,8 @@ pub trait UseCase: Default + TryFrom<UseCaseBytes> + Into<UseCaseBytes> + 'stati
 ///
 /// Everytime there is an allocation or deallocation, methods here get called.
 ///
+/// # Safety
+///
 /// This trait is unsafe to impl because it is called from within `GlobalAlloc`, which is also
 /// unsafe. All methods, at minimum, must not panic or unwind the stack. See the standard library
 /// documentation on custom allocators for more information.

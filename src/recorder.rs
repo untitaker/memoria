@@ -42,7 +42,7 @@ impl<U: UseCase> StatsRecorder<U> {
 
         results
             .get(&use_case.into())
-            .map(|stat| stat.clone())
+            .map(|stat| *stat)
             .unwrap_or_default()
     }
 
