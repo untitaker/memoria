@@ -1,7 +1,7 @@
 use std::fmt;
-use std::ops::{DerefMut};
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::marker::PhantomData;
+use std::ops::DerefMut;
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 use crate::{Error, Recorder, UseCase, UseCaseBytes};
 
@@ -26,7 +26,7 @@ impl<U: UseCase> StatsRecorder<U> {
             current_usecase_contention_thread_local: AtomicUsize::new(0),
             current_usecase_bad_bytes: AtomicUsize::new(0),
             results: OnceCell::new(),
-            _phantom: PhantomData
+            _phantom: PhantomData,
         }
     }
 
@@ -37,10 +37,13 @@ impl<U: UseCase> StatsRecorder<U> {
     pub fn get(&self, use_case: U) -> Stat {
         let results = match self.results.get() {
             Some(x) => x,
-            None => return Stat::default()
+            None => return Stat::default(),
         };
 
-        results.get(&use_case.into()).map(|stat| stat.clone()).unwrap_or_default()
+        results
+            .get(&use_case.into())
+            .map(|stat| stat.clone())
+            .unwrap_or_default()
     }
 
     fn get_mut(&self, use_case: U) -> impl DerefMut<Target = Stat> + '_ {
@@ -56,11 +59,11 @@ impl<U: UseCase> StatsRecorder<U> {
             Error::CurrentUsecaseContentionThreadLocal => {
                 &self.current_usecase_contention_thread_local
             }
-            Error::CurrentUsecaseBadBytes => &self.current_usecase_bad_bytes
+            Error::CurrentUsecaseBadBytes => &self.current_usecase_bad_bytes,
         }
     }
 
-    /// Check how often an error has occurred 
+    /// Check how often an error has occurred
     pub fn get_error(&self, code: Error) -> usize {
         self.get_error_atomic(code).load(Ordering::Relaxed)
     }
@@ -76,9 +79,18 @@ impl<U: UseCase> StatsRecorder<U> {
             results.clear();
         }
 
-        error_fn(Error::CurrentUsecaseBadBytes, self.get_error(Error::CurrentUsecaseBadBytes));
-        error_fn(Error::CurrentUsecaseContentionRefCell, self.get_error(Error::CurrentUsecaseContentionRefCell));
-        error_fn(Error::CurrentUsecaseContentionThreadLocal, self.get_error(Error::CurrentUsecaseContentionThreadLocal));
+        error_fn(
+            Error::CurrentUsecaseBadBytes,
+            self.get_error(Error::CurrentUsecaseBadBytes),
+        );
+        error_fn(
+            Error::CurrentUsecaseContentionRefCell,
+            self.get_error(Error::CurrentUsecaseContentionRefCell),
+        );
+        error_fn(
+            Error::CurrentUsecaseContentionThreadLocal,
+            self.get_error(Error::CurrentUsecaseContentionThreadLocal),
+        );
     }
 }
 

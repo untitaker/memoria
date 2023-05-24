@@ -27,13 +27,7 @@ pub type UseCaseBytes = u32;
 ///
 /// impl UseCase for ApplicationStage {}
 /// ```
-pub trait UseCase:
-    Default
-    + TryFrom<UseCaseBytes>
-    + Into<UseCaseBytes>
-    + 'static
-{
-}
+pub trait UseCase: Default + TryFrom<UseCaseBytes> + Into<UseCaseBytes> + 'static {}
 
 /// A recorder is a structure collecting statistics about memory usage. You might also call it a
 /// "metrics sink".

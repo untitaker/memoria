@@ -1,5 +1,5 @@
 // Note: Keep in sync with README.md example
-use num_enum::{TryFromPrimitive, IntoPrimitive};
+use num_enum::{IntoPrimitive, TryFromPrimitive};
 
 #[derive(TryFromPrimitive, IntoPrimitive, Default, Debug)]
 #[repr(u32)]
@@ -33,15 +33,17 @@ fn main() {
     process_data();
 
     println!("memory usage stats:");
-    ALLOCATOR.with_recorder(|recorder| {
-        recorder.flush(
-            |usecase, stat| {
-                println!("{usecase:?}: {stat:?}");
-            },
-            |err, count| {
-                println!("{err:?}: {count}");
-            }
-        );
-        Ok(())
-    }).ok();
+    ALLOCATOR
+        .with_recorder(|recorder| {
+            recorder.flush(
+                |usecase, stat| {
+                    println!("{usecase:?}: {stat:?}");
+                },
+                |err, count| {
+                    println!("{err:?}: {count}");
+                },
+            );
+            Ok(())
+        })
+        .ok();
 }

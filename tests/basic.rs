@@ -1,12 +1,13 @@
+use num_enum::{IntoPrimitive, TryFromPrimitive};
 use pretty_assertions::assert_eq;
-use num_enum::{TryFromPrimitive, IntoPrimitive};
 
-use memento::{Alloc, UseCase, Stat, Error};
+use memento::{Alloc, Error, Stat, UseCase};
 
 #[derive(TryFromPrimitive, IntoPrimitive, Default, Debug, Ord, Eq, PartialEq, PartialOrd)]
 #[repr(u32)]
 enum MyUseCase {
-    #[default] None,
+    #[default]
+    None,
     JsonPayload,
     UserProfile,
     ConfigFile,
@@ -55,7 +56,7 @@ fn basic() {
                     if count > 0 && err != Error::CurrentUsecaseContentionRefCell {
                         panic!("unexpected error: {:?}", err);
                     }
-                }
+                },
             );
             records.sort();
             assert_eq!(

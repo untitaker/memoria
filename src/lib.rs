@@ -24,7 +24,6 @@ thread_local! {
     static CURRENT_USECASE: RefCell<Option<UseCaseBytes>> = RefCell::new(None);
 }
 
-
 /// A drop-guard for setting and resetting the current usecase.
 ///
 /// Returned by [Alloc::with_usecase].
@@ -125,7 +124,9 @@ impl<R: Recorder<U>, U: UseCase, A: GlobalAlloc> Alloc<U, R, A> {
 
     fn handle_on_alloc(&self, ptr: usize, layout: Layout) {
         self.synchronized(Some(layout.size()), |use_case_bytes| {
-            let use_case = use_case_bytes.and_then(|x| U::try_from(x).ok()).unwrap_or_default();
+            let use_case = use_case_bytes
+                .and_then(|x| U::try_from(x).ok())
+                .unwrap_or_default();
             if self.recorder.on_alloc(use_case, layout.size()) {
                 TRACKED_POINTERS.insert(ptr, use_case_bytes.unwrap_or_else(|| U::default().into()));
             }
@@ -137,8 +138,10 @@ impl<R: Recorder<U>, U: UseCase, A: GlobalAlloc> Alloc<U, R, A> {
     fn handle_on_dealloc(&self, ptr: usize, layout: Layout) {
         self.synchronized(Some(layout.size()), |_| {
             if let Some((_, use_case_bytes)) = TRACKED_POINTERS.remove(&ptr) {
-                self.recorder
-                    .on_dealloc(U::try_from(use_case_bytes).unwrap_or_default(), layout.size());
+                self.recorder.on_dealloc(
+                    U::try_from(use_case_bytes).unwrap_or_default(),
+                    layout.size(),
+                );
             }
             Ok(())
         })
