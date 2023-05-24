@@ -65,9 +65,9 @@ fn basic() {
                     (
                         MyUseCase::None,
                         Stat {
-                            current: 17994,
-                            peak: 22924,
-                            total: 50757,
+                            current: before + 5400,
+                            peak: before + 10613,
+                            total: before + 40192,
                         },
                     ),
                     (
