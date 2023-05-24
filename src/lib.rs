@@ -52,11 +52,11 @@ pub struct Alloc<U: UseCase, R: Recorder<U> = StatsRecorder<U>, A: GlobalAlloc =
 }
 
 impl<U: UseCase> Alloc<U> {
-    /// Instantiate memento while wrapping the system allocator, and [StatsRecorder] as recorder.
+    /// Instantiate memoria while wrapping the system allocator, and [StatsRecorder] as recorder.
     ///
     /// ```ignore
     /// #[global_allocator]
-    /// static ALLOCATOR: memento::Alloc<MyUseCase> = memento::Alloc::new();
+    /// static ALLOCATOR: memoria::Alloc<MyUseCase> = memoria::Alloc::new();
     /// ```
     ///
     ///
@@ -67,7 +67,7 @@ impl<U: UseCase> Alloc<U> {
 }
 
 impl<R: Recorder<U>, U: UseCase, A: GlobalAlloc> Alloc<U, R, A> {
-    /// Instantiate memento with custom memory allocator to wrap and a custom recorder.
+    /// Instantiate memoria with custom memory allocator to wrap and a custom recorder.
     pub const fn new_with(recorder: R, alloc: A) -> Self {
         Alloc {
             alloc,

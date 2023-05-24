@@ -107,7 +107,7 @@ version = "0.1.0"
 dependencies = [
  "afl",
  "lazy_static",
- "memento",
+ "memoria",
 ]
 
 [[package]]
@@ -175,7 +175,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "memento"
+name = "memoria"
 version = "0.1.0"
 dependencies = [
  "dashmap",

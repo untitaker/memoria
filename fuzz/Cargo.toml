@@ -8,4 +8,4 @@ edition = "2021"
 [dependencies]
 afl = "0.12.4"
 lazy_static = "1.4.0"
-memento = { version = "0.1.0", path = ".." }
+memoria = { version = "0.1.0", path = ".." }

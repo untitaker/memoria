@@ -1,14 +1,14 @@
-# memento
+# memoria
 
 A bad memory "profiler" for production.
 
 1. Define a `UseCase` enum.
-2. Use memento's custom allocator.
+2. Use memoria's custom allocator.
 3. Assign usecases to functions or blocks of code using `Alloc::with_usecase`.
 4. Get basic memory usage statistics per-usecase, either at the end of your
    program or periodically in a background thread.
 
-[Documentation](https://docs.rs/memento), [Crates.io](https://crates.io/crates/memento)
+[Documentation](https://docs.rs/memoria), [Crates.io](https://crates.io/crates/memoria)
 
 <!-- Note: keep this codeblock in sync with examples/hello.rs -->
 
@@ -24,10 +24,10 @@ enum MyUseCase {
     ProcessData,
 }
 
-impl memento::UseCase for MyUseCase {}
+impl memoria::UseCase for MyUseCase {}
 
 #[global_allocator]
-static ALLOCATOR: memento::Alloc<MyUseCase> = memento::Alloc::new();
+static ALLOCATOR: memoria::Alloc<MyUseCase> = memoria::Alloc::new();
 
 fn load_config() {
     let _guard = ALLOCATOR.with_usecase(MyUseCase::LoadConfig);

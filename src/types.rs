@@ -1,6 +1,6 @@
 use std::hash::Hash;
 
-/// The internal representation memento uses to represent instances of `UseCase`.
+/// The internal representation memoria uses to represent instances of `UseCase`.
 pub type UseCaseBytes = u32;
 
 /// A `UseCase` is a struct describing what the application is currently doing. Memory statistics
@@ -14,7 +14,7 @@ pub type UseCaseBytes = u32;
 /// ```
 /// use num_enum::{TryFromPrimitive, IntoPrimitive};
 ///
-/// use memento::UseCase;
+/// use memoria::UseCase;
 ///
 /// #[derive(TryFromPrimitive, IntoPrimitive, Default)]
 /// #[repr(u32)]
@@ -52,7 +52,7 @@ pub unsafe trait Recorder<U: UseCase> {
     /// This function is allowed to allocate further data, but must not panic/unwind.
     fn on_dealloc(&self, _use_case: U, _size: usize) {}
 
-    /// Record an error encountered by memento that caused it to drop stats, such as a detected
+    /// Record an error encountered by memoria that caused it to drop stats, such as a detected
     /// deadlock that caused it to drop metrics.
     ///
     /// Deadlocks happen all the time when recording metrics.
@@ -61,14 +61,14 @@ pub unsafe trait Recorder<U: UseCase> {
     fn on_error(&self, _code: Error, _size: Option<usize>) {}
 }
 
-/// an error encountered by memento that caused it to drop stats, such as a detected deadlock that
+/// an error encountered by memoria that caused it to drop stats, such as a detected deadlock that
 /// caused it to drop metrics.
 #[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum Error {
-    /// This error happens potentially when memento allocates internally.
+    /// This error happens potentially when memoria allocates internally.
     CurrentUsecaseContentionRefCell,
 
-    /// This error happens potentially when memento allocates internally.
+    /// This error happens potentially when memoria allocates internally.
     CurrentUsecaseContentionThreadLocal,
 
     /// A `UseCase` was converted to `UseCaseBytes`, and later failed to parse back into `UseCase`.

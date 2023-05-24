@@ -1,7 +1,7 @@
 use num_enum::{IntoPrimitive, TryFromPrimitive};
 use pretty_assertions::assert_eq;
 
-use memento::{Alloc, Error, Stat, UseCase};
+use memoria::{Alloc, Error, Stat, UseCase};
 
 #[derive(TryFromPrimitive, IntoPrimitive, Default, Debug, Ord, Eq, PartialEq, PartialOrd)]
 #[repr(u32)]

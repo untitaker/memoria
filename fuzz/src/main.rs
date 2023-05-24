@@ -1,12 +1,12 @@
 use std::collections::BTreeMap;
 use std::sync::Mutex;
-use memento::UseCase;
+use memoria::UseCase;
 
 lazy_static::lazy_static! {
     static ref RESULTS: Mutex<BTreeMap<MyUseCase, usize>> = Mutex::new(BTreeMap::new());
 }
 
-memento::usecase! {
+memoria::usecase! {
     enum MyUseCase {
         default None,
         A,
@@ -17,7 +17,7 @@ memento::usecase! {
         F,
     }
 
-    impl memento::UseCase for MyUseCase {
+    impl memoria::UseCase for MyUseCase {
         fn on_alloc(&self, size: usize) {
             if matches!(self, MyUseCase::None) {
                 return;
@@ -45,10 +45,10 @@ memento::usecase! {
     }
 }
 
-type Allocator = memento::Alloc<MyUseCase>;
+type Allocator = memoria::Alloc<MyUseCase>;
 
 #[global_allocator]
-static ALLOCATOR: Allocator = memento::new!();
+static ALLOCATOR: Allocator = memoria::new!();
 
 type Allocations = BTreeMap<MyUseCase, Vec<String>>;
 

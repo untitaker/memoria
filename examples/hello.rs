@@ -10,10 +10,10 @@ enum MyUseCase {
     ProcessData,
 }
 
-impl memento::UseCase for MyUseCase {}
+impl memoria::UseCase for MyUseCase {}
 
 #[global_allocator]
-static ALLOCATOR: memento::Alloc<MyUseCase> = memento::Alloc::new();
+static ALLOCATOR: memoria::Alloc<MyUseCase> = memoria::Alloc::new();
 
 fn load_config() {
     let _guard = ALLOCATOR.with_usecase(MyUseCase::LoadConfig);
