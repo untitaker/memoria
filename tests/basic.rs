@@ -29,10 +29,9 @@ macro_rules! get {
 }
 
 #[test]
-#[allow(unused_variables)]
 fn basic() {
     let before = get!(None);
-    let foo = vec!["foo".to_owned(); 200];
+    let _foo = vec!["foo".to_owned(); 200];
 
     assert_eq!(get!(None), before + 5400);
 
