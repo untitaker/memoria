@@ -2,6 +2,12 @@
 name = "memento"
 version = "0.1.0"
 edition = "2021"
+description = "Memory allocation tracker. A bad memory profiler for production."
+readme = "README.md"
+keywords = ["allocator", "profiler", "memory", "performance"]
+license = "MIT"
+repository = "https://github.com/untitaker/memento"
+include = ["src/**/*", "LICENSE", "README.md", "tests"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
